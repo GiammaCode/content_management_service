@@ -6,53 +6,92 @@ app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
 jwt = JWTManager(app)
 
-CORS(app)
+CORS(app) # Enable CORS to allow cross-origin requests
 
-# Mock data for content
+# (simulate a contents database)
 contents = [
     {
         'id': 1,
-        'title': 'Movie 1',
-        'description': 'This is the description for Movie 1',
+        'title': 'Inception',
+        'description': 'Description: A mind-bending sci-fi thriller where a skilled thief.... Directed by Christopher Nolan',
         'image_url': 'https://via.placeholder.com/200x300'
     },
     {
         'id': 2,
-        'title': 'Movie 2',
-        'description': 'This is the description for Movie 2',
+        'title': 'The Shawshank Redemption',
+        'description':'Description: A compelling drama about hope and friendship, .... wrongly imprisoned for murder',
         'image_url': 'https://via.placeholder.com/200x300'
     },
     {
         'id': 3,
-        'title': 'Movie 3',
-        'description': 'This is the description for Movie 3',
+        'title': 'The Dark Knight',
+        'description': 'Description: In this gripping superhero film, Batman ....  of morality, justice, and sacrifice.',
         'image_url': 'https://via.placeholder.com/200x300'
     }
 ]
 
+# Endpoint to get all content
 @app.route('/content', methods=['GET'])
 def get_all_content():
+    """
+    Get all content available.
+    This endpoint returns a list of all contents in the system.
+    
+    Returns:
+        JSON response with all available content information.
+    """
     return jsonify(contents)
 
+# Endpoint to get details of a specific content by ID
 @app.route('/content/<int:content_id>', methods=['GET'])
 def get_content(content_id):
+    """
+    Get details of a specific content by ID.
+    This endpoint returns the details of a particular content item if it exists.
+    
+    Args:
+        content_id (int): ID of the content to retrieve.
+        
+    Returns:
+        JSON response with content details if found, otherwise a 404 error.
+    """
     content = next((c for c in contents if c['id'] == content_id), None)
     if not content:
         abort(404, description="Content not found")
     return jsonify(content)
 
 
-# Streaming of a specific content (GET /content/{id}/stream)
+# Endpoint to stream a specific content by ID
 @app.route('/content/<int:content_id>/stream', methods=['GET'])
 def stream_content(content_id):
+    """
+    Stream a specific content by ID.
+    This endpoint simulates the streaming of a particular content item if it exists.
+    
+    Args:
+        content_id (int): ID of the content to stream.
+        
+    Returns:
+        JSON response with content details if found, otherwise a 404 error.
+    """
     content = next((item for item in contents if item['id'] == content_id), None)
     if not content:
         abort(404, description="Content not found")
     return jsonify(content)
 
-# Content download
+# Endpoint to download a specific content by ID
 @app.route('/content/<int:content_id>/download', methods=['GET'])
 def download_content(content_id):
+    """
+    Download a specific content by ID.
+    This endpoint simulates the downloading of a particular content item if it exists.
+    
+    Args:
+        content_id (int): ID of the content to download.
+        
+    Returns:
+        JSON response with content details if found, otherwise a 404 error.
+    """
     content = next((item for item in contents if item['id'] == content_id), None)
     if not content:
         abort(404, description="Content not found")
