@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, abort
 from flask_jwt_extended import JWTManager, jwt_required
 from flask_cors import CORS
 
@@ -9,7 +9,7 @@ jwt = JWTManager(app)
 CORS(app)
 
 # Mock data for content
-data_store = [
+contents = [
     {
         'id': 1,
         'title': 'Movie 1',
@@ -30,34 +30,33 @@ data_store = [
     }
 ]
 
-# View all content
 @app.route('/content', methods=['GET'])
-def view_all_content():
-    return jsonify(data_store), 200
+def get_all_content():
+    return jsonify(contents)
 
-# View a specific content
 @app.route('/content/<int:content_id>', methods=['GET'])
-def view_specific_content(content_id):
-    content = next((item for item in data_store if item['id'] == content_id), None)
+def get_content(content_id):
+    content = next((c for c in contents if c['id'] == content_id), None)
     if not content:
-        return jsonify({'error': 'Content not found'}), 404
-    return jsonify( content=content), 200
+        abort(404, description="Content not found")
+    return jsonify(content)
 
-# Streaming of a specific content
+
+# Streaming of a specific content (GET /content/{id}/stream)
 @app.route('/content/<int:content_id>/stream', methods=['GET'])
 def stream_content(content_id):
-    content = next((item for item in data_store if item['id'] == content_id), None)
+    content = next((item for item in contents if item['id'] == content_id), None)
     if not content:
-        return jsonify({'error': 'Content not found'}), 404
-    return jsonify(content=content), 200
+        abort(404, description="Content not found")
+    return jsonify(content)
 
 # Content download
 @app.route('/content/<int:content_id>/download', methods=['GET'])
 def download_content(content_id):
-    content = next((item for item in data_store if item['id'] == content_id), None)
+    content = next((item for item in contents if item['id'] == content_id), None)
     if not content:
-        return jsonify({'error': 'Content not found'}), 404
-    return jsonify(content=content), 200
+        abort(404, description="Content not found")
+    return jsonify(content)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
