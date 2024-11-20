@@ -1,0 +1,189 @@
+openapi: 3.0.0
+info:
+  title: Content Management Service API
+  version: 1.0.0
+  description: API for managing, viewing, streaming, and downloading content.
+
+servers:
+  - url: http://localhost:5001
+    description: Local development server
+
+paths:
+  /content:
+    get:
+      summary: View all contents
+      description: Retrieves a list of all available content.
+      responses:
+        200:
+          description: A list of all content
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: "Inception"
+                    description:
+                      type: string
+                      example: "A mind-bending thriller directed by Christopher Nolan."
+                    image_url:
+                      type: string
+                      example: "https://via.placeholder.com/200x300"
+
+    put:
+      summary: Add a new content
+      description: Adds a new content item to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "The Matrix"
+                description:
+                  type: string
+                  example: "A sci-fi classic about virtual reality and freedom."
+                image_url:
+                  type: string
+                  example: "https://via.placeholder.com/200x300"
+      responses:
+        201:
+          description: Content added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Content added successfully"
+                  content:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 4
+                      title:
+                        type: string
+                        example: "The Matrix"
+                      description:
+                        type: string
+                        example: "A sci-fi classic about virtual reality and freedom."
+                      image_url:
+                        type: string
+                        example: "https://via.placeholder.com/200x300"
+
+  /content/{id}:
+    get:
+      summary: View a specific content
+      description: Retrieves details of a specific content by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Content details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  title:
+                    type: string
+                    example: "Inception"
+                  description:
+                    type: string
+                    example: "A mind-bending thriller directed by Christopher Nolan."
+                  image_url:
+                    type: string
+                    example: "https://via.placeholder.com/200x300"
+        404:
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Content not found"
+
+    delete:
+      summary: Delete a specific content
+      description: Deletes a specific content by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Content deleted successfully
+        404:
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Content not found"
+
+  /content/{id}/stream:
+    get:
+      summary: Stream a specific content
+      description: Streams a specific content by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Content stream started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Streaming content with ID 1"
+        404:
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Content not found"
+
+  /content/{id}/download:
+    get:
+      summary: Download a specific content
+      description: Downloads a specific content by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+ 

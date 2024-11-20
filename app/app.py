@@ -42,6 +42,30 @@ def get_all_content():
     """
     return jsonify(contents)
 
+@app.route('/content', methods=['POST'])
+def add_movie():
+    """
+    Add a new movie to the database.
+    Expects a JSON payload with 'title', 'description', and 'image_url'.
+    """
+    data = request.json
+
+    # Validate required fields
+    if not data or 'title' not in data or 'description' not in data or 'image_url' not in data:
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    # Create a new movie entry
+    new_movie = {
+        'id': len(contents) + 1,  # Auto-incremental ID
+        'title': data['title'],
+        'description': data['description'],
+        'image_url': data['image_url']
+    }
+    contents.append(new_movie)
+    
+    return jsonify({'message': 'Movie added successfully', 'movie': new_movie}), 201
+
+
 # Endpoint to get details of a specific content by ID
 @app.route('/content/<int:content_id>', methods=['GET'])
 def get_content(content_id):
